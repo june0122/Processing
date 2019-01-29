@@ -719,8 +719,202 @@ public class RainCatcherGame extends PApplet {
 
 <br>
 
->
+> Loop Mouse
 
 ```java
+import processing.core.PApplet;
 
+public class RainCatcherGame extends PApplet {
+
+
+    public static void main(String[] args) {
+        PApplet.main("RainCatcherGame");
+    }
+
+    public void setup() {
+        background(255);
+    }
+
+    public void settings() {
+        size(480, 270);
+    }
+
+    public void draw() {
+
+        int i = 0;
+
+        while (i < width) {
+            noStroke();
+            float distance = abs(mouseX - i);
+
+            fill(distance);
+            rect(i, 0, 10, height);
+            i += 10;
+        }
+    }
+}
+```
+
+<br>
+
+> Modularity
+
+```java
+import processing.core.PApplet;
+
+public class RainCatcherGame extends PApplet {
+
+    int x = 0;
+    int speed = 1;
+
+
+    public static void main(String[] args) {
+        PApplet.main("RainCatcherGame");
+    }
+
+    public void setup() {
+    }
+
+    public void settings() {
+        size(480, 270);
+    }
+
+    public void draw() {
+        background(255);
+        move();
+        bounce();
+        display();
+    }
+
+    public void move() {
+        x += speed;
+    }
+
+    public void bounce() {
+        if ((x > width) || (x < 0)) {
+            speed *= -1;
+        }
+    }
+
+    public void display() {
+        stroke(0);
+        fill(175);
+        ellipse(x, height / 2, 32, 32);
+    }
+
+}
+```
+
+<br>
+
+> Return Type
+
+```java
+import processing.core.PApplet;
+
+public class RainCatcherGame extends PApplet {
+
+
+    public static void main(String[] args) {
+        PApplet.main("RainCatcherGame");
+    }
+
+    public void setup() {
+    }
+
+    public void settings() {
+        size(480, 270);
+    }
+
+    public void draw() {
+        background(255);
+        stroke(0);
+
+        float d = distance(width / 2, height / 2, mouseX, mouseY);
+        fill(d * 3, d * 2, d);
+        ellipseMode(CENTER);
+        ellipse(width / 2, height / 2, 100, 100);
+
+    }
+
+    float distance(float x1, float y1, float x2, float y2) {
+        float dx = x1 - x2;
+        float dy = y1 - y2;
+        float d = sqrt(dx * dx + dy * dy); // 두 점 A (X1, Y1)와 B (X2, Y2) 사이의 거리를 찾기위한 공식
+        return d;
+    }
+}
+```
+
+<br>
+
+> Zoog Functions
+
+```java
+import processing.core.PApplet;
+
+public class RainCatcherGame extends PApplet {
+
+    float x = 240;
+    float y = 180;
+    float w = 60;
+    float h = 60;
+    float eyeSize = 16;
+
+
+    public static void main(String[] args) {
+        PApplet.main("RainCatcherGame");
+    }
+
+    public void setup() {
+    }
+
+    public void settings() {
+        size(480, 270);
+    }
+
+    public void draw() {
+        background(255);
+
+        // A color based on distance from the mouse
+        float d = dist(x, y, mouseX, mouseY);
+        int c = color(d);
+
+        // mouseX position determines speed factor for moveZoog function
+        float factor = constrain(mouseX/10, 0, 5);
+
+        // The code for changing the variables associated
+        // with Zoog and displaying Zoog is moved
+        // outside of draw() and into functions called here.
+        // The functions are given arguments, such
+        // as "Jiggle Zoog by the following factor"
+        // and "draw Zoog with the following eye color."
+        jiggleZoog(factor);
+        drawZoog(c);
+    }
+
+
+    public void jiggleZoog(float speed) {
+        // Change the x and y location of Zoog randomly
+        x = x + random(-1, 1)*speed;
+        y = y + random(-1, 1)*speed;
+        // Constrain Zoog to window
+        x = constrain(x, 0, width);
+        y = constrain(y, 0, height);
+    }
+
+    public void drawZoog(int eyeColor) {
+        // Set ellipses and rects to CENTER mode
+        ellipseMode(CENTER);
+
+        // Draw Zoog's head
+        stroke(0);
+        fill(255);
+        ellipse(x, y - h, w, h);
+        // Draw Zoog's eyes
+        fill(eyeColor);
+        ellipse(x - w/3, y - h, eyeSize, eyeSize*2);
+        ellipse(x + w/3, y - h, eyeSize, eyeSize*2);
+    }
+}
 ```
