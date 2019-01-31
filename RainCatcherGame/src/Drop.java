@@ -1,6 +1,6 @@
 import processing.core.PApplet;
 
-public class Drop {
+public class Drop extends RainCatcherGame{
     PApplet parent;
 
     float x, y;
@@ -26,6 +26,7 @@ public class Drop {
     public boolean reachedBottom() {
         // 바닥보다 더 아래로 갔을때 체크
         if (y > parent.height + r * 4) {
+            y = -1000;      // 바닥에 닿았을 때 빗방울의 y 값을 위로 옮겨주지 않으면 계속 바닥에 닿아있는 판정이 됨.
             return true;
         } else {
             return false;
@@ -33,7 +34,7 @@ public class Drop {
     }
 
     public void display() {
-        parent.fill(c);
+        parent.fill(255);
         parent.noStroke();
         // for문을 이용하여 빗방울 모양 디자인
         for (int i = 2; i < r; i++) {

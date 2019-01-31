@@ -1,10 +1,12 @@
 import processing.core.PApplet;
 
 import static processing.core.PApplet.dist;
+import static processing.core.PConstants.CENTER;
 
 public class Catcher {
     PApplet parent;
     float r;
+    float r2;
     float x, y;
 
     public Catcher(int tempR, PApplet p) {
@@ -20,9 +22,20 @@ public class Catcher {
     }
 
     void display() {
-        parent.stroke(0);
-        parent.fill(175);
-        parent.ellipse(x, y, r*2, r*2);
+        parent.noStroke();
+
+        parent.fill(255,70,10);
+        parent.rectMode(CENTER);
+        parent.rect(x, y+r/2, r*2, r);
+
+        parent.fill(200,10,10);
+        parent.ellipse(x, y, r*2, r);
+
+        parent.fill(255,70,10);
+        parent.ellipse(x, y+r, r*2, r);
+
+        parent.fill(255);
+        parent.ellipse(x, y+5, r*2-8, r-8);
     }
 
     public boolean intersect(Drop d) {
