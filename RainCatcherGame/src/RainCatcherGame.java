@@ -8,24 +8,23 @@ public class RainCatcherGame extends PApplet {
     Catcher catcher;
     Timer timer;
     Heart heart;
-    ArrayList particles;
+    ArrayList<Particle> particles = new ArrayList<>();
 
 
     int totalDrops = 0;
     int catchCounter = 0;
     int missCounter = 0;
 
+
     public static void main(String[] args) {
         PApplet.main("RainCatcherGame");
     }
 
     public void setup() {
-        drops = new Drop[1000];
+        drops = new Drop[500];
         catcher = new Catcher(28, this);
         timer = new Timer(500, this);
-        // particles = new ArrayList();
-
-
+        particles = new ArrayList();
 
         timer.start();
 
@@ -41,24 +40,43 @@ public class RainCatcherGame extends PApplet {
 
         noCursor();
 
-        ArrayList<Particle> particles = new ArrayList<Particle>();
-        particles.add(new Particle(this));
-
-
-        for(Particle par : particles) {
-            par.run();
-            par.gravity();
-            par.display();
-        }
-
-        if (particles.size() > 100) {
-            particles.remove(0);
-        }
 
         // Set catcher location
         catcher.setLocation(mouseX, mouseY);
         // Display the catcher
         catcher.display();
+
+
+        if (catcher.splash) {
+            while (particles.size() <= 5+ 5*catcher.splashCount) {
+
+                particles.add( new Particle(this));
+            }
+            catcher.splash = false;
+        }
+
+
+
+        for (int i = particles.size () - 1; i >= 0; i-- ) {
+
+            Particle p = particles.get(i);
+
+            p.run();
+            p.gravity();
+            p.display();
+
+            if(p.reachedBottom()){
+                particles.remove(0);
+                catcher.splashCount = 1;
+            }
+        }
+
+
+               /*if (particles.size() == 20) {
+                    particles.clear();
+                    catcher.splash = false;
+                }*/
+
 
         // 타이머 체크 및 빗방울의 배열 관리
         if (timer.isFinished()) {
@@ -86,6 +104,7 @@ public class RainCatcherGame extends PApplet {
 
             // cathcer와 빗방울이 겹친다면 catchCounter 증가 및 caugth 메소드 호출
             if (catcher.intersect(drops[i])) {
+
                 catchCounter++;
                 drops[i].caught();
             }

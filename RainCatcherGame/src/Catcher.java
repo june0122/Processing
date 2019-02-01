@@ -9,6 +9,9 @@ public class Catcher {
     float r2;
     float x, y;
 
+    boolean splash = false;
+    int splashCount = 0;
+
     public Catcher(int tempR, PApplet p) {
         parent = p;
         r = tempR;
@@ -44,8 +47,13 @@ public class Catcher {
 
         // 거리와 반지름의 합을 비교
         if (distance < r + d.r) {
+            splash = true;
+            splashCount ++;
+
             return true;
         } else {
+
+
             return false;
         }
     }

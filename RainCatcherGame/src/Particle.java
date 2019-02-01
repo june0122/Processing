@@ -13,10 +13,10 @@ public class Particle extends RainCatcherGame {
     Particle(PApplet p) {
         parent = p;
 
-        x = mouseX;
-        y = mouseY;
-        xspeed = random(-1, 1);
-        yspeed = random(-2, 0);
+        x = parent.mouseX;
+        y = parent.mouseY;
+        xspeed = random(-4, 4);
+        yspeed = random(-4, 0);
         life = 255;
     }
 
@@ -27,10 +27,10 @@ public class Particle extends RainCatcherGame {
     }
 
     public void gravity() {
-        yspeed += 0.1;
+        yspeed += 0.2;
     }
 
-  /*  public void stop() {
+    public void stop() {
         xspeed = 0;
         yspeed = 0;
     }
@@ -42,12 +42,23 @@ public class Particle extends RainCatcherGame {
         life -= 2.0;
         if (life < 0) return true;
         else return false;
-    }*/
+    }
+
+    public boolean reachedBottom() {
+        // 바닥보다 더 아래로 갔을때 체크
+        if (y > parent.height) {// 바닥에 닿았을 때 빗방울의 y 값을 위로 옮겨주지 않으면 계속 바닥에 닿아있는 판정이 됨.
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     public void display() {
+        life -= 3.0;
         parent.stroke(255, life);
         parent.fill(255,  life);
-        parent.ellipse(x, y, 10, 10);
+        parent.ellipse(x, y, 3, 3);
     }
 
 }
