@@ -120,8 +120,43 @@ public class Probability extends PApplet {
 
 <br>
 
-```java
+# Perlin Noise
 
+```java
+import processing.core.PApplet;
+
+public class Noise extends PApplet {
+
+    float time = (float) 0.0;
+    float increment = (float) 0.01;
+
+    public static void main(String[] args) {
+        PApplet.main("Noise");
+    }
+
+    public void setup() {
+
+    }
+
+    public void settings() {
+        size(200, 200);
+    }
+
+    public void draw() {
+        background(255);
+
+        // 노이즈 값을 time으로부터 얻고 윈도우의 넓이에 따라 크기를 변경한다.
+        float n = noise(time) * width;
+
+        // 각 사이클마다 "time"값을 증가
+        time += increment;
+
+        // 펄린 노이즈에 의해 결정되는 사이즈에 따라 타원을 그린다.
+        fill(0);
+        ellipse(width/2, height/2, n, n);
+
+    }
+}
 ```
 
 <br>
