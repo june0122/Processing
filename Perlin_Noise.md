@@ -151,14 +151,95 @@ public class NoiseBasic extends PApplet {
 }
 ```
 
+<br>
+
+동일한 논리를 임의의 walker에 적용하고 펄린 노이즈에 따라 x값과 y값을 할당해보면 아래와 같다.
+
+<p align="center">
+<img src="https://user-images.githubusercontent.com/39554623/52460693-f7034000-2bae-11e9-82cd-8b6653643f42.gif">
+</p>
+
+> **Walker**
+
+```java
+import processing.core.PApplet;
+
+public class Prototype extends PApplet {
+    Walker w;
+
+    float x, y, tx, ty;
+
+    public static void main(String[] args) {
+        PApplet.main("Prototype");
+    }
+
+    public void setup() {
+        w = new Walker(this);
+        background(255);
+    }
 
 
+    public void settings() {
+        size(300, 300);
+    }
 
+    public void draw() {
+        w.walk();
+        w.display();
+    }
+}
+```
 
+```java
+import processing.core.PApplet;
+
+public class Walker extends Prototype {
+
+    PApplet parent;
+
+    public Walker(PApplet p) {
+        parent = p;
+
+        this.x = width / 2;
+        this.y = height / 2;
+        this.tx = 0;
+        this.ty = 10000;
+    }
+
+    public void display() {
+        parent.stroke(0, 0, 0);
+        parent.point(this.x, this.y);
+    }
+
+    // 랜덤하게 위, 아래, 왼쪽, 오른쪽으로 움직이거나 제자리에 가만히 있는다.
+    public void walk() {
+        this.x = map(noise(this.tx), 0, 1, 0, parent.width);
+        this.y = map(noise(this.ty), 0, 1, 0, parent.height);
+
+        this.tx += 0.01;
+        this.ty += 0.01;
+    }
+}
+```
+
+<br>
+
+위의 예제에서 추가적인 한 쌍의 변수 tx와 ty를 사용하는 것은 Walker 객체의 x, y 좌표를 위해 두 개의 시간 변수를 사용하기 때문이다.
+그러나 tx는 0에서부터 시작하고 ty는 10000에서 시작하는 것이 주목해야할 부분이다. 이 숫자들은 임의로 선택한 것이지만, 두 개의 시간 변수를
+아주 구체적인 숫자로 초기화한 것은 **노이즈 함수가 결정론적**이기 때문이다.
+
+즉, 노이즈 함수는 특정 시간 t에 대해서 항상 같은 결과를 얻을 수 있다는 말이다. 만약 x와 y의 노이즈 값으로 같은 시간 t를 사용한다면, x와 y의 값이 항상 같아서 Walker 객체는 항상 대각선 상에서만 이동을 한다.
+그 대신, x는 0에서 시작하고 y는 10000에서 시작하는 것처럼 노이즈에 간격을 주면, x와 y를 서로 독립적으로 사용할 수 있다.
+
+<br>
 
 ![](https://user-images.githubusercontent.com/39554623/52389698-2004d180-2ad8-11e9-9e8e-c7ae74272b50.png)
 
+<br>
 
+위에서 사용된 시간의 개념은 실제로 존재하지 않는다. 노이즈 함수가 어떻게 작동하는지를 이해하기 위한 비유일 뿐, 실제로는 공간으로 존재한다.
+위의 그래프는 1차원 공간에서 선형 구조로 노이즈 값을 표현하기 때문에, 언제든 특정 x값을 얻을 수 있다.
+실제 예제에서, 종종 시간을 뜻하는 t 변수 대신 xoff라는 이름의 변수를 볼 수 있는데 이는 x-offset을 뜻한다.
 
 ## Perlin Noise Ellipse
 
@@ -249,12 +330,97 @@ public class NoiseRect extends PApplet {
 }
 ```
 
-## 
+## Perlin Noise Lava
+ 
+> [Processing Mathematics](https://github.com/june0122/Processing/blob/master/Mathematics.md) 의 Probability(확률) 코드 활용 
 
+<img width="280" src="https://user-images.githubusercontent.com/39554623/52464627-fc688680-2bbe-11e9-8a3d-faef36009c2a.png"> <img width="280" src="https://user-images.githubusercontent.com/39554623/52464630-fd011d00-2bbe-11e9-87db-a8c72522331d.png"> <img width="280" src="https://user-images.githubusercontent.com/39554623/52464631-fd011d00-2bbe-11e9-906d-1c660d46b3c4.png">
 
+<p align="center">
+<em>alpha값이 작은 레이어를 하나씩 쌓아가면서 사실적인 용암을 연출한다.</em>
+</p>
+
+<p align="center">
+<img src="https://user-images.githubusercontent.com/39554623/52463546-86622080-2bba-11e9-9c11-2a334597b472.gif">
+</p>
 
 ```java
+import processing.core.PApplet;
 
+public class Lava extends PApplet {
+    float noiseScale = (float) 0.005;
+    float temp = 0;
+    float levelDetailsMap = 450;    // 값이 커질수록 쌓여나가는 점들의 모양이 물결모양이 됨
+
+    public static void main(String[] args) {
+        PApplet.main("Lava");
+    }
+
+    public void setup() {
+        background(255, 255, 255);
+    }
+
+    public void settings() {
+        size(400, 300);
+    }
+
+    public void drawMap() {
+        for (int x = 0; x < width; x++) {
+            float noiseVal = noise(x * noiseScale, noiseScale * frameCount);
+
+            // noiseVal의 값을 확률적으로 설정하여 용암을 표현하는데 필요한 색상을 랜덤으로 불러온다.
+            if (noiseVal < 0.37) {
+                // 진회색
+                stroke(64, 64, 64);
+            } else if (noiseVal < 0.41) {
+                // 검정색
+                stroke(5, 5, 5);
+            } else if (noiseVal < 0.49) {
+                // 붉은계열 색상 랜덤
+                stroke(random(255), 1, 1);
+            } else if (noiseVal < 0.50) {
+                // 빨간색
+                stroke(250, 8, 8);
+            } else if (noiseVal < 0.53) {
+                // 주황색
+                stroke(250, 110, 10);
+            } else if (noiseVal < 0.54) {
+                // 다홍색
+                stroke(230, 57, 14);
+            } else if (noiseVal < 0.56) {
+                // 흰색
+                stroke(250, 250, 250);
+            } else {
+                // 빨간색
+                stroke(255, 0, 0);
+            }
+
+            point(x, (float) (noiseVal * levelDetailsMap + temp - levelDetailsMap / 1.7 - 10));
+
+            // y축 방향으로 모양을 그려나감
+            stroke(random(255) * 200, noiseVal * 200, noiseVal * 200 - 100, 25);    // 주황색 계열색
+            point(x, (float) (noiseVal * levelDetailsMap + temp - levelDetailsMap / 1.7 - 12));
+
+            // x축 방향으로 모양을 그려나감
+            stroke(random(100) * 200, noiseVal * 255, noiseVal * random(0, 100) - 20, 5);
+            // ↑ 주황색과 노란색의 혼합. R, G값이 높으면 노란색 계열이고, R값이 높은 상태에서 G값이 낮아지면 주황색 계열이 된다.
+            point((float) (noiseVal * levelDetailsMap + temp - levelDetailsMap / 1.7 - 12), x);
+        }
+    }
+
+    public void draw() {
+        strokeWeight(4);    // 3~8 사이의 값이 적절한 용암의 느낌을 낸다.
+        drawMap();
+        temp += 0.5;
+    }
+
+    public void mouseClicked() {
+        temp = 0;
+        noiseScale += 0.001;
+        background(255, 255, 255);
+        println("noiseScale: " + noiseScale);
+    }
+}
 ```
 
 
