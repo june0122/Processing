@@ -154,20 +154,48 @@ public class Noise extends PApplet {
         // 펄린 노이즈에 의해 결정되는 사이즈에 따라 타원을 그린다.
         fill(0);
         ellipse(width/2, height/2, n, n);
-
     }
 }
 ```
 
 <br>
 
-```java
+# Map
 
+```java
+import processing.core.PApplet;
+
+public class Map extends PApplet {
+
+    public static void main(String[] args) {
+        PApplet.main("Map");
+    }
+
+    public void setup() {
+    }
+
+    public void settings() {
+        size(300, 300);
+    }
+
+    public void draw() {
+        float r = map(mouseX, 0, width, 0, 255);
+        float b = map(mouseY, 0, height, 255, 0);
+        background(r, 0, b);
+    }
+}
 ```
 
 <br>
 
+# Polar Cartesian
+
+> 극좌표(polar coodinate)를 직교좌표(cartesian coodinate)로 변환 ([극좌표와 직교좌표 설명](https://suhak.tistory.com/entry/%EA%B7%B9%EC%A2%8C%ED%91%9Cpolar-coodinate%EC%99%80-%EC%A7%81%EA%B5%90%EC%A2%8C%ED%91%9Ccartesian-coodinate))
+
 ```java
+// Polar to Cartesian
+
+
 
 ```
 
