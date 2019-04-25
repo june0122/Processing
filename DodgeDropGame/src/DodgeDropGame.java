@@ -85,18 +85,6 @@ public class DodgeDropGame extends PApplet {
     }
 
     private void displaySprites() {
-//        pushMatrix();
-//        if (playerDirection == LEFT_MOTION) {
-//            scale(playerDirection, 1);
-//            image(sprites[currentSprite][4], playerDirection * (playerPosX + 40), playerPosY);
-//        } else if (playerDirection == RIGHT_MOTION) {
-//            scale(playerDirection, 1);
-//            image(sprites[currentSprite][4], playerDirection * playerPosX, playerPosY);
-//        } else if (playerDirection == IDLE_MOTION){
-//            scale(playerDirection, 1);
-//            image(sprites[currentSprite][1], playerDirection * playerPosX, playerPosY);
-//        }
-//        popMatrix();
         switch (playerDirection) {
             case LEFT_MOTION:
                 scale(playerDirection, 1);
