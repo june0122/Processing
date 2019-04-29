@@ -2,7 +2,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.event.KeyEvent;
 
-public class DodgeDropGame extends PApplet {
+public class RockMan extends PApplet {
     private PImage bgImg;
     private PImage[][] sprites;
 
