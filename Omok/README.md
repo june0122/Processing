@@ -1,4 +1,199 @@
+# 오목 요구 사항
+
+- 서버에 접속
+   
+  - 두 개의 클라이언트
+   
+  - 두 명 다 [준비 완료] 버튼을 눌렀을 때, 게임이 시작됨.
+   
+  - 클라이언트 3, 2, 1 츨력 후 시작됨.
+
+  - 시작 후, 각자 주사위 굴림.
+  
+     - 주사위 굴린 후, 큰 값을 가지는 클라이언트가 선이 됨. (흑 선)
+
+  - 승리와 패배 표시
+  
+  - [준비 완료] 버튼을 누를 수 있도록 변경.
+
+
+-> 프로토콜을 설계하는 방법을 이해한다.
+
+
+## 기능 명세서 (사용자 입장)
+
+1. 준비
+
+  - 준비 버튼을 통해서 준비 완료 상태 표시
+
+  - 상대방이 준비가 완료되면 카운트 다운 후 게임이 시작 됨.
+
+2. 주사위를 통한 흑백 선정
+
+  - 게임이 시작되면 자동으로 2개의 주사위가 굴려짐
+
+  - 큰 값을 가지는 클라이언트가 흑(선공)이 된다.
+
+3. 오목 게임
+
+  - 누구의 차례인지 파악할 수 있는 화면
+
+     - 현재 턴인 플레이어의 정보칸을 하이라이트 처리 
+
+  - 바둑돌을 놓을 수 있는 기능
+  
+     - 금수
+
+  - 승패 확인
+    
+    - 승리 클라이언트에는 You Win, 패배 클라이언트에는 You Lose 와 같은 텍스트 따로 표시
+
+  - 준비 완료 버튼 재활성
+
+<br>
+
+## 기술 명세서 (프로그램 입장)
+
+- 오목판을 그리는 기능
+
+- 클라이언트 정보를 그리는 기능 (IP, socket)
+
+  - 먼저 입장한 클라는 상단에, 나중에 입장한 클라는 하단에 표시
+
+- 준비 버튼
+
+- 카운트 다운 출력
+
+- 주사위 출력
+
+  - 출력값을 기반으로 순서 결정
+
+- 게임 시작 텍스트 출력
+
+- 놓인 돌들을 그리는 기능
+
+  - 돌을 놓을 수 있는 여부에 따라 마우스 커서 변경 (1. 좌표 범위 체크, 2. 돌의 유무 체크, 3. 금수 체크)
+
+  - 마우스 클릭을 통해 돌을 놓음
+
+- 누구의 턴인지에 따라 정보란에 표시(하이라이트)해주는 기능
+
+- 승패 확인
+
+  - 승리 클라이언트에는 You Win, 패배 클라이언트에는 You Lose 와 같은 텍스트 따로 표시
+  
+  - 일정 시간 후 준비 완료 버튼 재활성
+
+  - 초기화면으로 롤백
+
+<br>
+
+## 화면 설계서
+
+<br>
+<p align = "center">
+<img src = "https://user-images.githubusercontent.com/39554623/57174827-869f4e80-6e7f-11e9-8c37-db49e3397ca5.jpg">
+</p>
+<br>
+
+---
+
 # OmokGame
+
+## Omok
+
+### 필드
+
+- 오목판의 상태 (int[][])
+
+- 상수
+  - 빈 공간
+  - 흰색 돌
+  - 검정색 돌
+  - 대기 시간
+  - 오목판 크기
+
+### 메소드
+
+- 초기화면 출력
+
+- 카운트 및 시작화면 출력
+
+- 주사위 출력 후 클라이언트에게 주사위 값을 반환
+
+- 마우스 범위 체크
+    
+- 금수 체크
+
+- 바둑돌 출력
+
+  - 마우스 범위, 금수 체크 조건 만족 시
+  
+     - 좌표를 서버에게 전송
+
+- 승리 체크 및 출력
+
+## Sever
+
+### 필드
+
+### 메소드
+
+- 클라이언트 연결 체크
+
+  - 먼저 접속한 클라이언트를 구분한다.
+
+- 클라이언트 준비 과정
+
+  - 각 클라이언트의 READY 상태 체크
+  
+  - 두 클라이언트가 READY일 때, 게임 상태를 START로 바꾼다.
+
+- 주사위의 값을 받아서 작은 값은 흰색, 큰 값은 검은색으로 클라이언트에게 데이터 전송
+
+- 클라이언트가 돌을 놓으면 서버에서 받아서 다른 클라이언트에게 전송
+
+- 한 클라이언트가 승리 시, 서버에서 다른 클라이언트에게도 전송
+
+- 게임 상태를 START에서 READY로 변경
+
+## Client (PApplet)
+
+### 필드
+
+### 메소드
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## OmokServer
 
@@ -26,7 +221,7 @@
 
 - 흑/백 지정
 
--------------------------------------------------------
+----------------------------------------------------------
 
 ## OmokClient
 
@@ -48,122 +243,6 @@ private static final int WHITE = 2;
 - 샌드스레드 스타트
 
 - 리시브스레드 스타트
-
-- `settings()` :
-
-```java
-  public void settings() {
-        size(WIDTH, HEIGHT);
-        stone = new Stone();
-        board = new int[16][16];
-        for (int i = 0; i < 16; ++i) {
-            for (int j = 0; j < 16; ++j) {
-                board[i][j] = NONE;
-            }
-        }
-    }
-```
-
-
-- `draw()` :
-
-  - 오목판 그리기
-
-  - 좌표 지정 가능 여부 표시 (마우스 커서)
-
-  - 바둑돌 그리기 : ReceiveThread 클래스에서 돌의 좌표를 받아와 그린다.
-
-```java
-background(218, 165, 32);
-        int i, j;
-        for (i = 0; i < 16; ++i) {
-            line(SQUARE / 2, SQUARE / 2 + SQUARE * i, WIDTH - SQUARE / 2, SQUARE / 2 + SQUARE * i);
-        }
-        for (j = 0; j < 16; ++j) {
-            line(SQUARE / 2 + SQUARE * j, SQUARE / 2, SQUARE / 2 + SQUARE * j, HEIGHT - SQUARE / 2);
-        }
-        fill(0);
-
-        // 좌표 지정 가능 여부 표시 (마우스 커서)
-        if (inRange(mouseX, mouseY)) {
-            cursor(HAND);
-        } else {
-            cursor(ARROW);
-        }
-
-
-        black.display(this);
-        white.display(this);
-```
-
-```java
-public void mouseClicked() {
-        int x = mouseX / SQUARE;
-        int y = mouseY / SQUARE;
-        if (flag) {
-            if (inRange(mouseX, mouseY)) {
-                if (board[y][x] == NONE
-                        && !isForbidden(x, y)) {
-                    board[y][x] = BLACK;
-                    black.setBlack(x, y);
-                    flag = false;
-                }
-            }
-        } else {
-            if (inRange(mouseX, mouseY)) {
-                if (board[y][x] == NONE) {
-                    board[y][x] = WHITE;
-                    white.setWhite(x, y);
-                    flag = true;
-                }
-            }
-        }
-    }
-```
-
-> 보드 내부에 있는지 체크
-
-```java
-public boolean inBoard(int x, int y) {
-        return (x >= 0 && x < 16) && (y >= 0 && y < 16);
-    }
-
-    public boolean inRange(int x, int y) {
-        return ((x - SQUARE / 2) % SQUARE < 5 || (x - SQUARE / 2) % SQUARE > SQUARE - 5)
-                && ((y - SQUARE / 2) % SQUARE < 5 || (y - SQUARE / 2) % SQUARE > SQUARE - 5);
-    }
-```
-
-```java
-public class Stone {
-    private int[][] stone;
-    private static final int WIDTH = 30;
-    private static final int HEIGHT = 30;
-
-    Stone() {
-        stone = new int[16][16];
-    }
-
-    public void display(PApplet p) {
-        int i, j;
-        for (i = 0; i < 16; ++i) {
-            for (j = 0; j < 16; ++j) {
-                if (stone[i][j] == 1) {
-                    p.fill(0);
-                    p.ellipse(Board.getSQUARE() / 2 + Board.getSQUARE() * j,
-                            Board.getSQUARE() / 2 + Board.getSQUARE() * i,
-                            WIDTH, HEIGHT);
-                }
-            }
-        }
-    }
-
-    public void setStone(int x, int y) {
-        stone[y][x] = 1;
-    }
-}
-```
-
 
 ### ReceiveThread
 
